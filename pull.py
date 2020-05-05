@@ -18,25 +18,19 @@ login_data = {
     'nonce': ''
 }
 
-
 with requests.Session() as s:
-
     url = BaseUrl+'login'
     r = s.get(url, headers=headers,verify=False)
     soup = BeautifulSoup(r.content, 'html5lib')
     login_data['nonce'] = soup.find('input', attrs={'name': 'nonce'})['value']
     r = s.post(url, data=login_data, headers=headers,verify=False)
-
     try:
         response = s.get(api, verify=False).json()
         
     except ValueError as e:
         print(" API provided doesn't return json OR username and password are not correct")
         exit()
-
-
     challenges = []
-
     for ch in response['data']:
         challengeUrl = api+'/'+str(ch['id'])
         r = s.get(challengeUrl, headers=headers, verify=False).json()
@@ -71,7 +65,7 @@ with requests.Session() as s:
                                     print("Downloading "+chalfile)
                                     r.raise_for_status()
 
-                                    #Get rid of the randome folder name generated made to avoid name collision 
+                                    #Get rid of the randome folder name generated to avoid name collision 
                                     #example /files/randome/crackme.zip
                                     filename = chalfile.split('/')[3]
                                     with open(path+"/"+chal['category']+"/"+challenge['name']+"/"+filename, 'wb') as f:
